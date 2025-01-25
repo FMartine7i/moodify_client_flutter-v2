@@ -1,37 +1,37 @@
-![logo](https://i.imgur.com/xOniTxy.png)
-# moodify app 🎵
+<img src="https://i.imgur.com/xOniTxy.png" alt="moodify" width="65%">
+
+# moodify flutter app v2.0 🎵
 ## proyecto flutter
-### participantes: Aldana Aranda, Jessica Escobar y Federico Pérez Martinetti
+
+
+| <img src="https://i.imgur.com/aCqQXMw.png"> | <img src="https://i.imgur.com/Nn8qvJw.png"> | <img src="https://i.imgur.com/SteYj68.png"> | <img src="https://i.imgur.com/UaScQUF.png"> |
+| - | - | - | - |
+| Diseño del login | Perfil customizable | Home screen con toggle dark/light theme | Screen funcional de la canción elegida |
+
+
 
 ### Index
-
-1. Descripción
-2. Documentación
-    * [Requerimientos previos](#requerimientos-previos)
-    * [Instalación](#instalación)
-    * [Ejecución](#ejecución)
-    * [Estructura del proyecto](#estructura)
-    * [Widgets destacados](#widgets)
-    * [State Management](#state-management)
-    * [Funcionalidades](#funcionalidades)
-    * [Roadmap](#roadmap)
-3. Ramas
-    + [Aldi_branch](https://github.com/FMartine7i/moodify_api/tree/aldi_branch)
-    + [Jessi_branch](https://github.com/FMartine7i/moodify_api/tree/jessii_branch)
-    + [Fede_branch](https://github.com/FMartine7i/moodify_api/tree/fede_branch)
+* [Descripción](#descripción)
+* [Requerimientos previos](#requerimientos-previos)
+* [Instalación](#instalación)
+* [Ejecución](#ejecución)
+* [Estructura del proyecto](#estructura)
+* [Widgets destacados](#widgets)
+* [State Management](#state-management)
+* [Funcionalidades](#funcionalidades)
+* [Roadmap](#roadmap)
 
 ## Descripción
 **moodify** es una app que permite a los usuarios encontrar playlists, canciones y álbums basados en su **estado de ánimo** actual.
 
-## Documentación
-### Requerimientos previos
-> [!NOTE]
-> Tener instalado Flutter SDK y Dart. Editor de código recomendado: Visual Studio Code.
-### Instalación
+## Requerimientos previos
+> [!IMPORTANT]
+> Tener instalado Flutter SDK y Dart.
+## Instalación
 > - Clonar repositorio del Frontend: ``https://github.com/FMartine7i/flutter_app_2024.git``
 > - ``cd flutter_app_2024``
 > - Instalar dependencias con: ``flutter pub get``
-### Ejecución
+## Ejecución
 > [!NOTE]
 > Emulador: 
 > * API 35
@@ -40,7 +40,7 @@
 > * 1440 x 3040
 
 > Correr el comando: ``flutter run``
-### Estructura
+## Estructura
 > - ``pubspec.yaml``: contiene las dependencias de la app
 > - ``lib``: contiene la lógica de la app
 > - ``screens``: contiene los archivos de cada pantalla
@@ -73,7 +73,7 @@
 > - │   ├ pubspec.yaml
 
 
-### Widgets
+## Widgets
 * destacados
 
     | widget | descripción |
@@ -82,7 +82,7 @@
 
 
 
-### State Management
+## State Management
 * providers implementados
 
     | provider | descripción |
@@ -90,7 +90,7 @@
     | **theme provider** | Permite alternar entre tema claro y oscuro.   
 
 
-### Funcionalidades
+## Funcionalidades
 * funcionalidades implementadas
     | funcionalidad | descripción |
     |---|---|
@@ -109,6 +109,3 @@
 >[!Important]
 > Lo mismo sucede en el ``drawer menu``. Al seleccionar "songs" se desplegarán las opciones de ver todas las canciones y de elegir canciones por "mood". Esta segunda opción no está implementada, dado que esos datos se obtienen de la API de Spotify.
 > El botón "get started" en la ``home screen`` también accederá a buscar canciones por "mood", por lo tanto en esta versión no tiene una funcionalidad.
-
-### Roadmap
-Constituir el backend con ``Node.Js`` para integrar la API de Spotify para obtener información de canciones, álbumes y artistas.

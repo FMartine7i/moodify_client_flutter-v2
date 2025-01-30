@@ -63,7 +63,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   contentPadding: const EdgeInsets.symmetric( vertical: 5, horizontal: 20 ),
                   dense: true,
                   minLeadingWidth: 30,
-                  iconColor: Colors.deepPurpleAccent,
+                  iconColor: const Color.fromARGB(255, 166, 52, 247),
                   leading: Icon(item['icon']),
                   title: Column(
                     crossAxisAlignment:  CrossAxisAlignment.start,
@@ -82,7 +82,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 if (isExpandable && _isExpanded)
                   ...item['children']!.map<Widget>((child) {
                     return Padding(
-                      padding: const EdgeInsets.only(left: 50),
+                      padding: const EdgeInsets.only(left: 50, right: 50),
                       child: ListTile(
                         dense: true,
                         title: Text(child['title'], style: const TextStyle(fontSize: 16)),

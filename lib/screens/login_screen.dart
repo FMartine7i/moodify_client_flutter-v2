@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../controllers/auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -8,7 +9,40 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _loginFormKey = GlobalKey<FormState>();
+  final _singUpFormKey = GlobalKey<FormState>();
+  final FocusNode _focusNode = FocusNode();
+  final AuthController _authController = AuthController();
   bool showSignUp = false;
+  bool isLoading = true;
+
+  void _handleLogin() async {
+    if (_authController.validateForm(_loginFormKey)) {
+      bool isLoggedIn = await _authController.loginUser();
+      if (isLoggedIn) {
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.pushNamed(context, 'home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login failed: incorrect username or password.')),
+        );
+      }
+    }
+  }
+  
+  void _handleRegister() async {
+    if (_authController.validateForm(_singUpFormKey)) {
+      bool isRegistered = await _authController.registerUser();
+      if (isRegistered) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User registered successfully.')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build (BuildContext context) {
     return Scaffold(
@@ -39,12 +73,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ElevatedButton(
                             onPressed: () {
                               if (!showSignUp) { 
-                                Navigator.pushNamed(context, 'home'); 
+                                _handleLogin();
                               } else { 
-                                setState(() {
-                                  print("signing up...");
-                                });
+                                _handleRegister();
                               }
+                              _focusNode.requestFocus();
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color.fromARGB(255, 89, 30, 138),
@@ -101,31 +134,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // vista formulario login
   Widget _buildLoginForm(){
-    return Column(
-      children: [
-        _buildTextField("username"),
-        const SizedBox(height: 20),
-        _buildTextField("password", obscureText: true),
-      ],
+    return Form(
+      key: _loginFormKey,
+      child: Column(
+        children: [
+          _buildTextField("username", controller: _authController.usernameController),
+          const SizedBox(height: 20),
+          _buildTextField("password", obscureText: true, controller: _authController.passwordController),
+        ],
+      )
     );
   }
 
   // Vista del formulario de Sign In
   Widget _buildSignUpForm() {
-    return Column(
-      children: [
-        _buildTextField("username"),
-        const SizedBox(height: 20),
-        _buildTextField("email"),
-        const SizedBox(height: 20),
-        _buildTextField("password", obscureText: true),
-      ],
+    return Form(
+      key: _singUpFormKey,
+      child: Column(
+        children: [
+          _buildTextField("username", controller: _authController.usernameController),
+          const SizedBox(height: 20),
+          _buildTextField("email", controller: _authController.emailController),
+          const SizedBox(height: 20),
+          _buildTextField("password", obscureText: true, controller: _authController.passwordController),
+        ],
+      )
     );
   }
 
   // metodo para construir textfield
-  Widget _buildTextField(String hintText, {bool obscureText = false}) {
-    return TextField(
+  Widget _buildTextField(String hintText, {bool obscureText = false, TextEditingController ? controller}) {
+    return TextFormField(
+      controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
@@ -141,13 +181,22 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: const Color.fromARGB(255, 52, 52, 52).withOpacity(0.9),
+            color: const Color.fromARGB(255, 52, 52, 52).withValues(alpha: 0.9),
             width: 2,
           ),
         ),
       ),
       obscureText: obscureText,
     );
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _authController.usernameController.dispose();
+    _authController.emailController.dispose();
+    _authController.passwordController.dispose();
+    super.dispose();
   }
 
   // validate() {

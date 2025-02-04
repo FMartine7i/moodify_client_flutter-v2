@@ -35,7 +35,8 @@ class MyApp extends StatelessWidget {
               'songs_list': (context) => const SongsListScreen(),
               'profile': (context) => const ProfileScreen(),
               'songs_list_item': (context) => const SongsListItem(),
-              'albums_list': (context) => const AlbumesListScreen(),            
+              'albums_list': (context) => const AlbumesListScreen(),
+              'album_item': (context) => const AlbumDetailScreen(),            
               'playlists_list': (context) => const PlaylistsListScreen(),  
           });
         }

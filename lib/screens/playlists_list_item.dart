@@ -30,8 +30,7 @@ class _PlaylistListItemState extends State<PlaylistListItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.playlist['playlistName']),
-        backgroundColor: const Color.fromARGB(255, 67, 37, 81),
+        title: Text(widget.playlist['playlistName'])
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -45,7 +44,8 @@ class _PlaylistListItemState extends State<PlaylistListItem> {
                 width: double.infinity,
                 height: 400,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(                   
                     image: AssetImage('assets/playlists/${widget.playlist['id']}.png'),
                     fit: BoxFit.cover,
                   ),
@@ -62,14 +62,12 @@ class _PlaylistListItemState extends State<PlaylistListItem> {
                 ),
               ),
               const SizedBox(height: 10),
-
               Text(
                 "${widget.playlist['description']}",
                 style: const TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-
               Form(
                 key: _formKey,
                 child: Column(
@@ -78,12 +76,12 @@ class _PlaylistListItemState extends State<PlaylistListItem> {
                     TextFormField(
                       controller: _commentController,
                       decoration: const InputDecoration(
-                        labelText: 'Añadir un comentario',
+                        labelText: 'add comment',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Por favor, ingresa un comentario';
+                          return 'enter a comment';
                         }
                         return null;
                       },
@@ -94,7 +92,7 @@ class _PlaylistListItemState extends State<PlaylistListItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Marcar como favorito',
+                          'Favorite',
                           style: TextStyle(fontSize: 16),
                         ),
                         Switch(
@@ -118,7 +116,7 @@ class _PlaylistListItemState extends State<PlaylistListItem> {
                             });
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Comentario guardado'),
+                                content: Text('comment saved!'),
                               ),
                             );
                           }
@@ -126,7 +124,7 @@ class _PlaylistListItemState extends State<PlaylistListItem> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 67, 37, 81),
                         ),
-                        child: const Text('Guardar comentario'),
+                        child: const Text('save'),
                       ),
                     ),
                   ],

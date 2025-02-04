@@ -7,7 +7,6 @@ import 'playlists_list_item.dart';
 
 class PlaylistsListScreen extends StatefulWidget {
   const PlaylistsListScreen({super.key});
-
   @override
   PlaylistsListScreenState createState() => PlaylistsListScreenState();
 }
@@ -40,14 +39,14 @@ class PlaylistsListScreenState extends State<PlaylistsListScreen> {
       appBar: AppBar(
         title: TextField(
           decoration: const InputDecoration(
-            hintText: 'Buscar playlist...',
+            contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            hintText: 'search playlist...',
             border: InputBorder.none,
             hintStyle: TextStyle(color: Colors.white60),
           ),
           style: const TextStyle(color: Colors.white),
           onChanged: _updateSearchQuery,
-        ),
-        backgroundColor: const Color.fromARGB(255, 67, 37, 81),
+        )
       ),
       body: ListView.builder(
         itemCount: _filteredElements.length,
@@ -105,44 +104,43 @@ class PlaylistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      elevation: 10.0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Image.asset(
-              'assets/playlists/$id.png',
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  'assets/images/album.png',
+    return Container(
+      margin: const EdgeInsets.all(7),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  'assets/playlists/$id.png',
                   width: 100,
                   height: 100,
                   fit: BoxFit.cover,
-                );
-              },
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    playlistName,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(artists),
-                ],
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset('assets/images/album.png', width: 100, height: 100, fit: BoxFit.cover);
+                  },
+                )
               ),
-            ),
-          ],
-        ),
-      ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      playlistName,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    Text(artists),
+                  ],
+                )
+              ),
+            ]
+          ),
+        ],
+      )
     );
   }
 }

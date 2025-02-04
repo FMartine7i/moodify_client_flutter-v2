@@ -1,16 +1,20 @@
-<img src="https://i.imgur.com/xOniTxy.png" alt="moodify" width="65%">
+<img src="https://i.imgur.com/xOniTxy.png" alt="moodify" width="60%">
 
 # moodify flutter app v2.0 🎵
 ## proyecto flutter
 
+<table>
+  <tr>
+    <td><img src="https://i.imgur.com/aCqQXMw.png"></td>
+    <td><img src="https://i.imgur.com/Nn8qvJw.png"></td>
+    <td><img src="https://i.imgur.com/SteYj68.png"></td>
+    <td><img src="https://i.imgur.com/UaScQUF.png"></td>
+  </tr>
+</table>
 
-| <img src="https://i.imgur.com/aCqQXMw.png"> | <img src="https://i.imgur.com/Nn8qvJw.png"> | <img src="https://i.imgur.com/SteYj68.png"> | <img src="https://i.imgur.com/UaScQUF.png"> |
-| - | - | - | - |
-| Diseño del login | Perfil customizable | Home screen con toggle dark/light theme | Screen funcional de la canción elegida |
+<hr>
 
-
-
-### Index
+## Index
 * [Descripción](#descripción)
 * [Requerimientos previos](#requerimientos-previos)
 * [Instalación](#instalación)

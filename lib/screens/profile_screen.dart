@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_base/services/api_service.dart';
+import 'package:flutter_application_base/widgets/drawer_menu.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_application_base/mocks/albumes_mock.dart' show elementos;
-import 'package:flutter_application_base/mocks/usuario_mock.dart' show usuario;
-import 'package:flutter_application_base/mocks/songs_mock.dart' show elements;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
-
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -16,7 +14,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   dynamic _image;
   String? assetImage;
-  String _username = "Usuario";
+  String _username = "user";
+  final ApiService _apiService = ApiService();
   List<Map<String, dynamic>> _likedSongs = [];
   List<Map<String, dynamic>> _favoriteAlbums = [];
   bool _showFavorites = false;
@@ -39,39 +38,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _image = File(imagePath);
         }
       }
-      _username = prefs.getString('username') ?? usuario[0];
+      _username = prefs.getString('username') ?? "";
 
-      List<String>? favoriteAlbums = prefs.getStringList('favoriteAlbums');
-      if (favoriteAlbums != null) {
-        _favoriteAlbums = favoriteAlbums.map((id) {
-          return {
-            'albumName': elementos.firstWhere((album) => album[0].toString() == id)[1],
-            'image': 'assets/albumes/$id.jpg'
-          };
-        }).toList();
-      }
+      // List<String>? favoriteAlbums = prefs.getStringList('favoriteAlbums');
+      // if (favoriteAlbums != null) {
+      //   _favoriteAlbums = favoriteAlbums.map((id) {
+      //     return {
+      //       'albumName': elementos.firstWhere((album) => album[0].toString() == id)[1],
+      //       'image': 'assets/albumes/$id.jpg'
+      //     };
+      //   }).toList();
+      // }
 
-      _likedSongs = elements
-          .where((song) => song[5] == true)
-          .map((song) => {
-            'songCover': 'assets/songs/${song[0]}.jpg',
-            'songName': song[1],
-            'artist': song[2],
-            'album': song[3],
-          }).toList();
+    //   _likedSongs = elements
+    //       .where((song) => song['id'] == true)
+    //       .map((song) => {
+    //         'image': song['image'],
+    //         'name': song['name'],
+    //         'artist': song['artist'],
+    //         'album': song['album'],
+    //       }).toList();
     });
   }
 
   Future<void> _saveProfileData() async {
     final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('id') ?? 1;
+    await _apiService.updateUsername(userId, _username);
     await prefs.setString('username', _username);
     await prefs.setStringList(
       'favoriteAlbums',
-      _favoriteAlbums.map((album) => album['albumName']!.toString()).toList(),
+      _favoriteAlbums.map((album) => album['name']!.toString()).toList(),
     );
     await prefs.setStringList(
       'likedSongs',
-      _likedSongs.map((song) => song['songName']!.toString()).toList(),
+      _likedSongs.map((song) => song['name']!.toString()).toList(),
     );
   }
 
@@ -92,16 +93,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _pickAvatar(BuildContext context, String avatarPath) async {
-  final prefs = await SharedPreferences.getInstance();
-  
-  setState(() {
-    assetImage = avatarPath;
-    _image = null; // Guardamos la ruta del asset como String
-  });
+    final prefs = await SharedPreferences.getInstance();
+    
+    setState(() {
+      assetImage = avatarPath;
+      _image = null; // Guardamos la ruta del asset como String
+    });
 
-  await prefs.setString('profileImage', avatarPath);
-  Navigator.pop(context);
-}
+    await prefs.setString('profileImage', avatarPath);
+    Navigator.pop(context);
+  }
 
   void _showImageOptions(BuildContext context) {
     showModalBottomSheet(
@@ -113,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('elegir avatar', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              const Text('select avatar', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ListTile(
                 leading: const Icon(Icons.photo_library),
                 title: const Text('gallery'),
@@ -159,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('elegir avatar', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              const Text('select your avatar', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               Expanded(
                 child: GridView.builder(
@@ -221,14 +222,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context) {
         String newUsername = _username;
         return AlertDialog(
-          title: const Text("cambiar nombre de usuario"),
+          title: const Text("change username"),
           content: TextField(
             onChanged: (value) {
               newUsername = value;
             },
             decoration: const InputDecoration(
               focusColor: Color.fromARGB(255, 112, 18, 195),
-              labelText: "Nuevo nombre de usuario",
+              labelText: "new username",
             ),
           ),
           actions: [
@@ -239,7 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("Cancelar"),
+              child: const Text("cancel"),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -253,7 +254,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _saveProfileData();
                 Navigator.of(context).pop();
               },
-              child: const Text("Guardar"),
+              child: const Text("save"),
             ),
           ],
         );
@@ -267,10 +268,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Profile', style: TextStyle(fontSize: 22, fontFamily: 'Poppins')),
-        elevation: 10,
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+        ),
+        toolbarHeight: 80
       ),
+      endDrawer: const DrawerMenu(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -302,20 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        _username,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(3.0, 3.0),
-                              blurRadius: 5.0,
-                              color: Color.fromARGB(255, 129, 72, 155),
-                            ),
-                          ],
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text(_username, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold,),),
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: _changeUsername,
@@ -348,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: 180,
                         height: 50,
                         child: Text(
-                          _showFavorites ? "ocultar" : "ver álbumes favoritos", 
+                          _showFavorites ? "hide" : "my favorite albums", 
                           textAlign: TextAlign.center, 
                           style: const TextStyle(color: Colors.white)
                         )
@@ -358,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (_showFavorites) ...[
                     const SizedBox(height: 20),
                     _favoriteAlbums.isEmpty
-                        ? const Text("No tienes álbumes favoritos.")
+                        ? const Text("No albums added yet.")
                         : ListView.builder(
                             shrinkWrap: true,
                             itemCount: _favoriteAlbums.length,
@@ -392,7 +382,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               const SizedBox(height: 10),
                               const Text(
-                                "Playlist personalizada",
+                                "customized playlist",
                                 style: TextStyle(
                                   fontSize: 18,
                                   letterSpacing: 1.0,
@@ -403,7 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Expanded(
                                 child: _likedSongs.isEmpty
                                     ? const Center(
-                                        child: Text("No hay canciones"),
+                                        child: Text("There are no songs liked yet."),
                                       )
                                     : ListView.builder(
                                         itemCount: _likedSongs.length,
@@ -444,7 +434,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         alignment: Alignment.center,
                         width: 180,
                         height: 50,
-                        child: const Text("ver mis playlists", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                        child: const Text("show my playlist", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
                       )
                     )
                   ),

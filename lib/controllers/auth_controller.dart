@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../service/api_service.dart';
+import '../services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController {
@@ -14,9 +14,10 @@ class AuthController {
     try{
       final storedUser = await _apiService.compareUserDetails(username, password);
       if (storedUser['username'] == username) {
-        //await saveUser(storedUser['id'], storedUser['username'], storedUser['email'], storedUser['profilePic']);
+        await saveUser(storedUser['id'], storedUser['username']);
         return true;
       } else {
+        print('Error: Usuario o contraseña incorrectos');
         return false;
       }
     } catch (err) {
@@ -25,12 +26,10 @@ class AuthController {
     }
   }
 
-  Future<void> saveUser(int userId, String username, String email, String profilePic) async {
+  Future<void> saveUser(int userId, String username) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('id', userId);
     await prefs.setString('username', username);
-    await prefs.setString('email', email);
-    await prefs.setString('profilePic', profilePic);
   }
 // ==================================== registar usuario ====================================
   Future<bool> registerUser() async {

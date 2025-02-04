@@ -8,7 +8,7 @@ class DrawerMenu extends StatefulWidget {
   State<DrawerMenu> createState() => _DrawerMenuState();
 }
 class _DrawerMenuState extends State<DrawerMenu> {
-  bool _isExpanded = false;
+  final Map<String, bool> _displayedItems = {};
   String? _selectedMood;
 
   final List<Map<String, dynamic>> _menuItems = [
@@ -32,7 +32,14 @@ class _DrawerMenuState extends State<DrawerMenu> {
       'route': 'albums_list', 
       'icon': Icons.album_outlined,
       'title': 'albums', 
-      'subtitle': 'search albums'},
+      'subtitle': 'search albums',
+      'isExpandable': true,
+      'children': [
+        {'route': 'albums_list', 'title': 'all albums'},
+        {'route': 'null', 'title': 'by mood'}
+        ]
+      },
+      
     {
       'route': 'playlists_list', 
       'icon': Icons.playlist_play,
@@ -56,6 +63,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
           const _DrawerHeaderAlternative(),
           ..._menuItems.map((item) {
             final bool isExpandable = item['isExpandable'] ?? false;
+            final bool isDisplayed = _displayedItems[item['title']] ?? false;
 
             return Column(
               children: [
@@ -70,16 +78,20 @@ class _DrawerMenuState extends State<DrawerMenu> {
                     children: [Text(item['title']!, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     if (item['subtitle'] != null) Text(item['subtitle'], style: const TextStyle(fontSize: 14, color: Colors.grey))]
                   ),
-                  trailing: isExpandable ? AnimatedRotation( turns: _isExpanded ? 0.5 : 0, duration: const Duration(milliseconds: 200), child: const Icon(Icons.arrow_drop_down)): null,
+                  trailing: isExpandable ? AnimatedRotation( turns: isDisplayed ? 0.5 : 0, duration: const Duration(milliseconds: 200), child: const Icon(Icons.arrow_drop_down)): null,
                   onTap: () {
-                    if (isExpandable) { setState(() { _isExpanded = !_isExpanded; }); }
-                    else {
+                    if (isExpandable) { 
+                      setState(() { 
+                        _displayedItems.updateAll((key, value) => false); // cierra todos
+                        _displayedItems[item['title']] = !isDisplayed;  
+                        }); 
+                      } else {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, item['route']!);
                     }
                   },
                 ),
-                if (isExpandable && _isExpanded)
+                if (isExpandable && isDisplayed)
                   ...item['children']!.map<Widget>((child) {
                     return Padding(
                       padding: const EdgeInsets.only(left: 50, right: 50),
@@ -92,12 +104,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             _showMoodDialog(context);
                           } else {
                             Navigator.pop(context);
-                            Navigator.pushNamed(context, child['route']!);
+                            Navigator.pushNamed(context, child['route']!, arguments: { 'filter': 'all' });
                           }
                         }
                       )  
                     );
-                  })
+                  }
+                )
               ]
             );
           }
@@ -122,7 +135,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
       {'name': 'happy'},
       {'name': 'sad'},
       {'name': 'angry'},
-      {'name': 'focused'},
+      {'name': 'badass'},
+      {'name': 'epic'},  
       {'name': 'romantic'},
     ];
     
@@ -148,6 +162,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                         _selectedMood = mood['name'];
                       });
                     }
+                    Navigator.pushNamed(context,'songs_list',arguments: { 'filter': mood['name'] });
                     _filterByMood(mood['name']!);
                   }
                 );

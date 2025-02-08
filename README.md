@@ -5,10 +5,10 @@
 
 <table>
   <tr>
-    <td><img src="https://i.imgur.com/aCqQXMw.png"></td>
-    <td><img src="https://i.imgur.com/Nn8qvJw.png"></td>
-    <td><img src="https://i.imgur.com/SteYj68.png"></td>
-    <td><img src="https://i.imgur.com/UaScQUF.png"></td>
+    <td><img src="https://i.imgur.com/1aLP7MN.png"></td>
+    <td><img src="https://i.imgur.com/j9WsSwT.png"></td>
+    <td><img src="https://i.imgur.com/asmaNWy.png"></td>
+    <td><img src="https://i.imgur.com/rSbcm4j.png"></td>
   </tr>
 </table>
 
@@ -19,22 +19,25 @@
 * [Requerimientos previos](#requerimientos-previos)
 * [Instalación](#instalación)
 * [Ejecución](#ejecución)
+* [Funcionalidades](#funcionalidades)
 * [Estructura del proyecto](#estructura)
 * [Widgets destacados](#widgets)
 * [State Management](#state-management)
-* [Funcionalidades](#funcionalidades)
 * [Roadmap](#roadmap)
 
 ## Descripción
-**moodify** es una app que permite a los usuarios encontrar playlists, canciones y álbums basados en su **estado de ánimo** actual.
+Segunda versión del proyecto frontend para la app **moodify**. Esta versión, además de contar con mejoras visuales, se conecta con la API desarrollada específicamente para esta app para obtener canciones, álbumes y playlists de acuerdo a un "mood" ingresado por el usuario.
+> [!NOTE]
+> La API de Spotify no está devolviendo las playlists, por lo tanto, en la app se mostrarán ``mocks`` de playlists.
 
 ## Requerimientos previos
-> [!IMPORTANT]
-> Tener instalado Flutter SDK y Dart.
+* Tener instalado Flutter SDK y Dart.
+* Tener acceso a la [API moodify](https://github.com/FMartine7i/Moodify_v2)
+
 ## Instalación
-> - Clonar repositorio del Frontend: ``https://github.com/FMartine7i/flutter_app_2024.git``
-> - ``cd flutter_app_2024``
-> - Instalar dependencias con: ``flutter pub get``
+* Clonar [este repositorio](https://github.com/FMartine7i/Moodify_v2)
+* Acceder a la carpeta principal: ``cd flutter_application_base``
+* Instalar dependencias con: ``flutter pub get``
 ## Ejecución
 > [!NOTE]
 > Emulador: 
@@ -43,37 +46,64 @@
 > * SO: Android 15
 > * 1440 x 3040
 
-> Correr el comando: ``flutter run``
+* Correr el comando: ``flutter run``
+
+## Funcionalidades
+### Funcionalidades implementadas
+
+| <img src="https://i.imgur.com/1aLP7MN.png" width="200"> | <img src="https://i.imgur.com/j9WsSwT.png" width="200"> | <img src="https://i.imgur.com/asmaNWy.png" width="200"> |
+| - | - | - |
+| Sistema de ``login/sign up``. Primero, el usuario deberá registrarse, luego podrá ingresar con el nombre y contraseña que haya elegido. | En el menú principal se muestran canciones aleatorias y se puede acceder al ``drawer menu``. | A través del ``drawer menu`` se puede acceder a las listas de canciones, álbumes  y playlists y elegir por ``mood``. Además, cuenta con un toggle para alternar el tema. |
+
+| <img src="https://i.imgur.com/ivU1tJU.png" width="200"> | <img src="https://i.imgur.com/aDe6ypX.png" width="200"> | <img src="https://i.imgur.com/rSbcm4j.png" width="200"> |
+| - | - | - |
+| Screen para el perfil. El usuario puede cambiar su ``username`` y su foto de perfil. También se mostrarán sus canciones y álbumes gustados. | Lista de todas las canciones de la API. Se puede dar agregar a favoritos y seleccionar cualquiera de ellas para reproducir. | Vista de los detalles de la canción seleccionada en la lista. |
+> [!WARNING]
+> La API de Spotify no está devolviendo las urls de las previews de las canciones, por ello, no reproducirá ningún sonido.
+
 ## Estructura
 > - ``pubspec.yaml``: contiene las dependencias de la app
 > - ``lib``: contiene la lógica de la app
+> - ``controllers``: contiene la lógica de los controladores de la app. ``AuthController`` se encarga de la autenticación para el ``login``y el ``sign up``.
 > - ``screens``: contiene los archivos de cada pantalla
 > - ``widgets``: contiene los widgets de la app
 > - ``main.dart``: contiene el punto de entrada de la app
+> - ``services``: contiene la lógica para la conexión con la API
 
 > ### flutter_app_2024
 > - ├── lib/
+> - │   ├── controllers/
+> - │   │   ├── auth_controller.dart
 > - │   ├── helpers/
 > - │   │   ├── preferences.dart
 > - │   │   ├── theme_provider.dart
 > - │   ├── main.dart
 > - │   ├── mocks/
-> - │   │   ├── albumes_mock.dart
+> - │   │   ├── albums_mock.dart
+> - │   │   ├── playlists_mock.dart
 > - │   │   ├── songs_mock.dart
-> - │   │   ├── usuario_mock.dart
 > - │   ├── screens/
-> - │   │   ├── album_individual.dart
-> - │   │   ├── albu_list_screen.dart
+> - │   │   ├── album_item_screen.dart
+> - │   │   ├── albums_list_screen.dart
 > - │   │   ├── home_screen.dart
 > - │   │   ├── login_screen.dart
-> - │   │   ├── profile_screen
+> - │   │   ├── playlist_list_item.dart
+> - │   │   ├── playlists_list_screen.dart
+> - │   │   ├── profile_screen.dart
+> - │   │   ├── screens.dart
 > - │   │   ├── songs.dart
 > - │   │   ├── songs_list_screen.dart
 > - │   │   ├── songs_list_item.dart
+> - │   ├─ services/
+> - │   │   ├── api_service.dart
 > - │   ├─ themes/
 > - │   │   ├── default_theme.dart
 > - │   ├── widgets/
+> - │   │   ├── animated_play_button.dart
 > - │   │   ├── drawer_menu.dart
+> - │   │   ├── glassmorphism.dart
+> - │   │   ├── search_area.dart
+> - │   │   ├── song_slide.dart
 > - │   ├ pubspec.yaml
 
 
@@ -82,9 +112,11 @@
 
     | widget | descripción |
     |---|---|
-    | **drawer menu** | Menú lateral desplegable con opciones dinámicas.
-
-
+    | **animated_play_button** | Botón de reproducción animado. |
+    | **drawer menu** | Menú lateral desplegable con opciones dinámicas. |
+    | **glassmorphism** | Permite crear un efecto de vidrio con un gradiente. |
+    | **search_area** | Botón de búsqueda para cada entidad. |
+    | **song_slide** | Permite mostrar una mini lista de canciones con su imagen y nombre. |
 
 ## State Management
 * providers implementados
@@ -93,23 +125,8 @@
     |---|---|
     | **theme provider** | Permite alternar entre tema claro y oscuro.   
 
-
-## Funcionalidades
-* funcionalidades implementadas
-    | funcionalidad | descripción |
-    |---|---|
-    | **cambiar tema** | permite cambiar entre tema claro y oscuro.
-    | **login** | permite iniciar sesión con usuario y contraseña.
-    | **mostrar canciones** | permite mostrar canciones de un álbum.
-    | **mostrar canción** | permite mostrar canción individual.
-    | **mostrar álbumes** | permite mostrar álbumes almacenados.
-    | **mostrar álbum** | permite mostrar álbum individual.
-    | **mostrar playlists** | permite mostrar las playlists de spotify.
-    | **mostrar perfil** | muestra el perfil del usuario. Permite agregar una foto personalizada, cambiar el nombre y ver sus canciones y álbumes favoritos.
-
->[!Tip]
-> Las funcionalidades de la app se encuentran en desarrollo, por lo tanto se podrá ingresar a la app solo presionando el botón de ``login`` en la pantalla de inicio. No es necesario registrarse en la sección de ``sign up``.
-
->[!Important]
-> Lo mismo sucede en el ``drawer menu``. Al seleccionar "songs" se desplegarán las opciones de ver todas las canciones y de elegir canciones por "mood". Esta segunda opción no está implementada, dado que esos datos se obtienen de la API de Spotify.
-> El botón "get started" en la ``home screen`` también accederá a buscar canciones por "mood", por lo tanto en esta versión no tiene una funcionalidad.
+## Roadmap
+* [x] Desarrollar un mini reproductor de canciones.
+* [x] Agregar una sección para playlists personalizadas.
+* [x] Arreglar el sistema de likes de canciones.
+* [x] Hacer funcionales los sistemas de ``loops`` y ``shuffle``.

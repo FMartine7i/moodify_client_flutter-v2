@@ -41,6 +41,15 @@ class ApiService {
     }
   }
 
+  Future<List<dynamic>> fetchAlbumsByMood(String mood) async {
+    final response = await http.get(Uri.parse('$baseUrl/albums?mood=$mood'));
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to fetch albums by mood');
+    }
+  }
+
   Future<Map<String, dynamic>> fetchAlbumDetails(int albumId) async {
     final response = await http.get(Uri.parse('$baseUrl/albums/$albumId'));
     if (response.statusCode == 200) {

@@ -78,7 +78,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                     children: [Text(item['title']!, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     if (item['subtitle'] != null) Text(item['subtitle'], style: const TextStyle(fontSize: 14, color: Colors.grey))]
                   ),
-                  trailing: isExpandable ? AnimatedRotation( turns: isDisplayed ? 0.5 : 0, duration: const Duration(milliseconds: 200), child: const Icon(Icons.arrow_drop_down)): null,
+                  trailing: isExpandable ? AnimatedRotation(turns: isDisplayed ? 0.5 : 0, duration: const Duration(milliseconds: 200), child: const Icon(Icons.arrow_drop_down)): null,
                   onTap: () {
                     if (isExpandable) { 
                       setState(() { 
@@ -101,7 +101,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                         onTap: () {
                           if (child['title'] == 'by mood') {
                             Navigator.pop(context);
-                            _showMoodDialog(context);
+                            _showMoodDialog(context, item['title']);
                           } else {
                             Navigator.pop(context);
                             Navigator.pushNamed(context, child['route']!, arguments: { 'filter': 'all' });
@@ -129,7 +129,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     );
   }
 
-  void _showMoodDialog(BuildContext context) {
+  void _showMoodDialog(BuildContext context, String category) {
     final moods = [
       {'name': 'relaxed'},
       {'name': 'happy'},
@@ -162,7 +162,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
                         _selectedMood = mood['name'];
                       });
                     }
-                    Navigator.pushNamed(context,'songs_list',arguments: { 'filter': mood['name'] });
+                    final route = category == 'songs' ? 'songs_list' : 'albums_list';
+                    Navigator.pushNamed(context, route, arguments: { 'filter': mood['name'] });
                     _filterByMood(mood['name']!);
                   }
                 );

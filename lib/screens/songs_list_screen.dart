@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/search_area.dart';
@@ -19,6 +20,7 @@ class _SongsListScreenState extends State<SongsListScreen> {
   final ApiService _apiService = ApiService();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  late SharedPreferences _prefs;
 
   @override
   void initState() {
@@ -26,13 +28,19 @@ class _SongsListScreenState extends State<SongsListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
       final filter = args['filter'] ?? 'all';
-      _loadUserData();
+      _initPrefs();
       if (filter == 'all') {
         _fetchSongs();
       } else {
         _fetchSongsByMood(filter);
       }
     });
+  }
+
+  Future<void> _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    _loadUserData();
+    _loadFavorites();
   }
 
   Future<void> _fetchSongs() async {
@@ -67,13 +75,7 @@ class _SongsListScreenState extends State<SongsListScreen> {
   }
 
   Future<void> _loadUserData() async {
-    final prefs = SharedPreferences.getInstance();
-    _username = (await prefs).getString('username') ?? '';
-  }
-
-  Future<void> _saveFavSongs() async {
-    final prefs = await SharedPreferences.getInstance();
-    // _favSongs = _songs.where((song) => song['isFavorite']).map((song) => song['id']).toList();
+    _username = _prefs.getString('username') ?? '';
   }
 
   @override
@@ -110,7 +112,25 @@ class _SongsListScreenState extends State<SongsListScreen> {
   void _toggleFavorite(int index) {
     setState(() {
       _songs[index]['isFavorite'] = !_songs[index]['isFavorite'];
+      if (_songs[index]['isFavorite']) {
+        _favSongs.add(_songs[index]);
+      } else {
+        _favSongs.removeWhere((song) => song['id'] == _songs[index]['id']);
+      }
+      _saveFavorites();
     });
+  }
+
+  void _saveFavorites() {
+    List<String> favSongsJson = _favSongs.map((song) => jsonEncode(song)).toList();
+    _prefs.setStringList('favSongs', favSongsJson);
+  }
+
+  void _loadFavorites() {
+    List<String> favSongsJson = _prefs.getStringList('favSongs') ?? [];
+    if (favSongsJson.isNotEmpty) {
+      _favSongs = favSongsJson.map((json) => jsonDecode(json) as Map<String, dynamic>).toList();
+    }
   }
 
   @override

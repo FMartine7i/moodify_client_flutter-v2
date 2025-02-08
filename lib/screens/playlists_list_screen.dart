@@ -40,9 +40,22 @@ class PlaylistsListScreenState extends State<PlaylistsListScreen> {
         title: TextField(
           decoration: const InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-            hintText: 'search playlist...',
+            hintText: 'search...',
+            isDense: true,
+            filled: true,
+            fillColor: Colors.transparent, 
             border: InputBorder.none,
-            hintStyle: TextStyle(color: Colors.white60),
+            focusedBorder: UnderlineInputBorder(  
+              borderSide: BorderSide(
+              color: Color.fromARGB(255, 151, 13, 225),
+              width: 2),
+            ),
+            enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 2,
+              ),
+            ),
           ),
           style: const TextStyle(color: Colors.white),
           onChanged: _updateSearchQuery,
@@ -69,7 +82,6 @@ class PlaylistsListScreenState extends State<PlaylistsListScreen> {
                   ),
                 ),
               );
-
               setState(() {});
             },
             child: PlaylistCard(

@@ -23,6 +23,7 @@
 * [Estructura del proyecto](#estructura)
 * [Widgets destacados](#widgets)
 * [State Management](#state-management)
+* [Estado](#estado)
 * [Roadmap](#roadmap)
 
 ## Descripción
@@ -60,6 +61,9 @@ Segunda versión del proyecto frontend para la app **moodify**. Esta versión, a
 | Screen para el perfil. El usuario puede cambiar su ``username`` y su foto de perfil. También se mostrarán sus canciones y álbumes gustados. | Lista de todas las canciones de la API. Se puede dar agregar a favoritos y seleccionar cualquiera de ellas para reproducir. | Vista de los detalles de la canción seleccionada en la lista. |
 > [!WARNING]
 > La API de Spotify no está devolviendo las urls de las previews de las canciones, por ello, no reproducirá ningún sonido.
+
+> [!IMPORTANT]
+> El sistema para agregar canciones a favoritos aún no está terminado, debido a la complejidad de su implementación.
 
 ## Estructura
 > - ``pubspec.yaml``: contiene las dependencias de la app
@@ -108,22 +112,26 @@ Segunda versión del proyecto frontend para la app **moodify**. Esta versión, a
 
 
 ## Widgets
-* destacados
 
-    | widget | descripción |
-    |---|---|
-    | **animated_play_button** | Botón de reproducción animado. |
-    | **drawer menu** | Menú lateral desplegable con opciones dinámicas. |
-    | **glassmorphism** | Permite crear un efecto de vidrio con un gradiente. |
-    | **search_area** | Botón de búsqueda para cada entidad. |
-    | **song_slide** | Permite mostrar una mini lista de canciones con su imagen y nombre. |
+  | widget | descripción |
+  |---|---|
+  | **animated_play_button** | Botón de reproducción animado. |
+  | **drawer menu** | Menú lateral desplegable con opciones dinámicas. |
+  | **glassmorphism** | Permite crear un efecto de vidrio con un gradiente. |
+  | **search_area** | Botón de búsqueda para cada entidad. |
+  | **song_slide** | Permite mostrar una mini lista de canciones con su imagen y nombre. |
 
 ## State Management
-* providers implementados
 
-    | provider | descripción |
-    |---|---|
-    | **theme provider** | Permite alternar entre tema claro y oscuro.   
+  | provider | descripción |
+  |---|---|
+  | **theme provider** | Permite alternar entre tema claro y oscuro.   
+
+## Estado
+  | Nombre del proyecto | moodify client v2 |
+  | - | - |
+  | Estado |  <img src="https://img.shields.io/badge/incomplete-90%25-8A2BE2"> |
+  | Tech Stack | Flutter, Dart, Provider, HTTP |
 
 ## Roadmap
 * [x] Desarrollar un mini reproductor de canciones.

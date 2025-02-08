@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_base/services/api_service.dart';
 import 'package:flutter_application_base/widgets/drawer_menu.dart';
@@ -16,13 +17,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? assetImage;
   String _username = "user";
   final ApiService _apiService = ApiService();
-  List<Map<String, dynamic>> _likedSongs = [];
+  List<Map<String, dynamic>> _favSongs = [];
   List<Map<String, dynamic>> _favoriteAlbums = [];
+  late SharedPreferences _prefs;
   bool _showFavorites = false;
 
   @override
   void initState() {
     super.initState();
+    _initPrefs();
+  }
+  
+  Future<void> _initPrefs () async {
+    _prefs = await SharedPreferences.getInstance();
     _loadProfileData();
   }
 
@@ -39,26 +46,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       }
       _username = prefs.getString('username') ?? "";
-
-      // List<String>? favoriteAlbums = prefs.getStringList('favoriteAlbums');
-      // if (favoriteAlbums != null) {
-      //   _favoriteAlbums = favoriteAlbums.map((id) {
-      //     return {
-      //       'albumName': elementos.firstWhere((album) => album[0].toString() == id)[1],
-      //       'image': 'assets/albumes/$id.jpg'
-      //     };
-      //   }).toList();
-      // }
-
-    //   _likedSongs = elements
-    //       .where((song) => song['id'] == true)
-    //       .map((song) => {
-    //         'image': song['image'],
-    //         'name': song['name'],
-    //         'artist': song['artist'],
-    //         'album': song['album'],
-    //       }).toList();
+      _loadFavorites();
+      _loadFavAlbums();
     });
+  }
+
+  void _loadFavorites() {
+    List<String> favSongsJson = _prefs.getStringList('favSongs') ?? [];
+    if (favSongsJson.isNotEmpty) {
+      _favSongs = favSongsJson.map((json) => jsonDecode(json) as Map<String, dynamic>).toList();
+    }
+  }
+
+  void _loadFavAlbums() {
+    List<String> favAlbumsJson = _prefs.getStringList('favoriteAlbums') ?? [];
+    if (favAlbumsJson.isNotEmpty) {
+      _favoriteAlbums = favAlbumsJson.map((json) => jsonDecode(json) as Map<String, dynamic>).toList();
+    }
   }
 
   Future<void> _saveProfileData() async {
@@ -72,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
     await prefs.setStringList(
       'likedSongs',
-      _likedSongs.map((song) => song['name']!.toString()).toList(),
+      _favSongs.map((song) => song['name']!.toString()).toList(),
     );
   }
 
@@ -348,20 +352,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (_showFavorites) ...[
                     const SizedBox(height: 20),
                     _favoriteAlbums.isEmpty
-                        ? const Text("No albums added yet.")
+                        ? const Text("no albums added yet.")
                         : ListView.builder(
                             shrinkWrap: true,
                             itemCount: _favoriteAlbums.length,
                             itemBuilder: (context, index) {
                               final album = _favoriteAlbums[index];
                               return ListTile(
-                                leading: Image.asset(
-                                  album['image']!,
+                                leading: Image.network(
+                                  album['image'],
                                   width: 50,
                                   height: 50,
                                   fit: BoxFit.cover,
                                 ),
-                                title: Text(album['albumName']!),
+                                title: Text(album['name']),
                               );
                             },
                           ),
@@ -391,24 +395,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               const Divider(),
                               Expanded(
-                                child: _likedSongs.isEmpty
+                                child: _favSongs.isEmpty
                                     ? const Center(
-                                        child: Text("There are no songs liked yet."),
+                                        child: Text("there are no songs liked yet."),
                                       )
                                     : ListView.builder(
-                                        itemCount: _likedSongs.length,
+                                        itemCount: _favSongs.length,
                                         itemBuilder: (context, index) {
-                                          final song = _likedSongs[index];
+                                          final song = _favSongs[index];
                                           return ListTile(
-                                            leading: Image.asset(
-                                              song['songCover']!,
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.cover,
+                                            leading: ClipRRect(
+                                              child: Image.network(
+                                                song['image'],
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              )
                                             ),
-                                            title: Text(song['songName']!),
-                                            subtitle: Text(
-                                                "${song['artist']} - ${song['album']}"),
+                                            title: Text(song['name'], overflow: TextOverflow.ellipsis, maxLines: 1),
+                                            subtitle: Text("${song['artist']} - ${song['album']}", overflow: TextOverflow.ellipsis, maxLines: 1)
                                           );
                                         },
                                       ),
